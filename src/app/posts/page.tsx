@@ -1,8 +1,15 @@
 import { createPost } from "@/actions/actions";
 import { prisma } from "@/lib/prisma";
+import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 
 export default async function Page() {
+
+  const {isAuthenticated} = getKindeServerSession();
+  if(!(await isAuthenticated())){
+    redirect("/api/auth/login");
+  }
   const posts = await prisma.post.findMany();
 
   return (
